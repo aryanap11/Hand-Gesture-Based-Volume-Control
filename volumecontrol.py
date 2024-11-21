@@ -72,7 +72,7 @@ while True:
             master_volume = np.interp(distance, [25, 200], [min_vol, max_vol])
             volume_percentage = ((master_volume-min_vol) /
                                  (max_vol - min_vol))*100
-            # volume.SetMasterVolumeLevel(master_volume, None)
+            volume.SetMasterVolumeLevel(master_volume, None)
             # print(master_volume,volume_percentage)
 
     ctime = time.time()  # Current time
