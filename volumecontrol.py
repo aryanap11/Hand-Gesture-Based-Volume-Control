@@ -11,7 +11,6 @@ interface = devices.Activate(
     IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
 volume = interface.QueryInterface(IAudioEndpointVolume)
 vol_range = volume.GetVolumeRange()
-
 min_vol = vol_range[0]
 max_vol = vol_range[1]
 
@@ -24,6 +23,7 @@ hands = mphands.Hands()
 mpdraw = mp.solutions.drawing_utils
 
 ptime, ctime = 0, 0
+volume_percentage = 0
 
 while True:
     success, img = cap.read()
@@ -70,14 +70,19 @@ while True:
                 cv2.circle(img, (cx, cy), 10, (0, 0, 255), cv2.FILLED)
 
             master_volume = np.interp(distance, [25, 200], [min_vol, max_vol])
-            volume.SetMasterVolumeLevel(master_volume, None)
+            volume_percentage = ((master_volume-min_vol) /
+                                 (max_vol - min_vol))*100
+            # volume.SetMasterVolumeLevel(master_volume, None)
+            # print(master_volume,volume_percentage)
 
     ctime = time.time()  # Current time
     fps = 1 / (ctime - ptime)  # Calculate FPS
     ptime = ctime  # Update previous time
 
     # Display FPS on the frame
-    cv2.putText(img, str(int(fps)), (10, 50),
+    cv2.putText(img, f'FPS:{int(fps)}', (10, 50),
+                cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 255), 2)
+    cv2.putText(img, f'Volume:{int(volume_percentage)}%', (10, 100),
                 cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 255), 2)
 
     cv2.imshow('Hand Gesture Volume Control', img)
